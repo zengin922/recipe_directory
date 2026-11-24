@@ -1,18 +1,14 @@
 from lib.database_connection import DatabaseConnection
-from lib.artist_repository import ArtistRepository
+from lib.recipe_repository import RecipeRepository
 
-
-# Connect to the database
+# Connect to the database and reset it to the seed data
 connection = DatabaseConnection()
 connection.connect()
+connection.seed("seeds/recipes.sql")
 
-# Seed with some seed data
-connection.seed("seeds/music_library.sql")
+# Retrieve all recipes and print them
+recipe_repository = RecipeRepository(connection)
 
-# Retrieve all artists
-artist_repository = ArtistRepository(connection)
-artists = artist_repository.all()
-
-# List them out
-for artist in artists:
-    print(artist)
+print("My recipes:")
+for recipe in recipe_repository.all():
+    print(f" * {recipe.id} - {recipe.name} ({recipe.cooking_time} mins, rated {recipe.rating}/5)")
